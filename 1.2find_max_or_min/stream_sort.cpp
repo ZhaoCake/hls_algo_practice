@@ -1,20 +1,13 @@
 #include "stream_sort.hpp"
-#include <linux/limits.h>
+#include <limits>
 
-void stream_sort(hls::stream<int> input, int &max, int &min) {
-#pragma HLS INTERFACE mode=axis port=min
-#pragma HLS INTERFACE mode=axis port=max
-#pragma HLS INTERFACE mode=axis port=input
+void stream_sort(hls::stream<int> &input, int &max, int &min) {
+    max = std::numeric_limits<int>::min();
+    min = std::numeric_limits<int>::max();
     
-    
-    int max_value = 0;
-    int min_value = MAX_INPUT;
-
-    int temp;
-
     while (!input.empty()) {
-        temp = input.read();
-        max_value = (temp > max_value) ? temp : max_value;
-        min_value = (temp < min_value) ? temp : min_value;
+        int val = input.read();
+        if (val > max) max = val;
+        if (val < min) min = val;
     }
 }
